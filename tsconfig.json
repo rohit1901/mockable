@@ -5,16 +5,16 @@
     "declaration": true,
     "rootDir": "src",
     "sourceMap": true,
+    "experimentalDecorators": true
   },
   "include": [
-    "src/**/*.ts"
+    "src/**/*.ts",
   ],
   "start": "node src/index.js",
   "exclude": [
     "node_modules",
     "src/out/**/*",
     "src/__tests__/**/*.ts",
-    "lib",
-    "src/dry-run.ts"
+    "lib"
   ]
 }

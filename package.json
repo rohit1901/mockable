@@ -8,7 +8,7 @@
     "build": "tsc && node esbuild.config.js",
     "build-dry-run": "tsc && node esbuild.config.js && npm pack --dry-run",
     "watch-mode": "tsc -w -p tsconfig.json",
-    "start-dev": "node ./src/dry-run.js",
+    "start-dev": "node ./src/examples/dry-run.js",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
     "prettify": "prettier --write \"src/**/*.ts\"",

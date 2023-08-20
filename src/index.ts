@@ -1,5 +1,14 @@
-export function mockable() {
-  console.info(
-    "Hello from mockable, the library is currently in development, stay tuned!",
-  );
+import * as ts from 'typescript';
+import {isClassDeclaration, isDecorator, isInterfaceDeclaration, SourceFile, Statement, TypeNode} from "typescript";
+import {isMockable} from "./decorator";
+
+// Helper function to check if a node has the @Mockable decorator
+export function hasMockableDecorator(node: Statement): boolean {
+  if (isClassDeclaration(node) || isInterfaceDeclaration(node)) {
+    return isMockable(node)
+  }
+  return false;
+}
+export function getMockableDeclarations(sourceFile: SourceFile): Statement[] {
+  return sourceFile.statements.filter(hasMockableDecorator);
 }
