@@ -1,0 +1,13 @@
+# Folders
+.idea/
+.run/
+lib/
+coverage/
+node_modules
+# Files
+.DS_Store
+*.d.ts
+*.js
+!*.config.js
+*.map
+.npmignore
