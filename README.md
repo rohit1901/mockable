@@ -64,7 +64,7 @@ MockUserService.getUser.mockResolvedValue({ id: 1, name: 'Custom Name' });
 
 ## Examples
 
-For more detailed examples and advanced usage, please refer to the [Examples](./examples) directory in this repository.
+For more detailed examples and advanced usage, please refer to the [Examples](./src/examples) directory in this repository.
 
 ## Contributing
 
