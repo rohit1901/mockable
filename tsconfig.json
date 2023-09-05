@@ -5,7 +5,8 @@
     "declaration": true,
     "rootDir": "src",
     "sourceMap": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
   "include": [
     "src/**/*.ts",

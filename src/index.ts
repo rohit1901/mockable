@@ -1,12 +1,10 @@
-import * as ts from "typescript";
 import {
   isClassDeclaration,
-  isDecorator,
   isInterfaceDeclaration,
   SourceFile,
   Statement,
-  TypeNode,
 } from "typescript";
+
 import { isMockable } from "./decorator";
 
 // Helper function to check if a node has the @Mockable decorator
