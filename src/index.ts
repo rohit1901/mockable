@@ -3,9 +3,9 @@ import {
   isInterfaceDeclaration,
   SourceFile,
   Statement,
-} from "typescript";
+} from 'typescript';
 
-import { isMockable } from "./decorator";
+import { isMockable } from './decorator';
 
 // Helper function to check if a node has the @Mockable decorator
 export function hasMockableDecorator(node: Statement): boolean {

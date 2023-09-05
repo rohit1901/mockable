@@ -1,3 +1,3 @@
-import {generateMocks} from "../generator";
+import { generateMocks } from '../generator';
 
 generateMocks();

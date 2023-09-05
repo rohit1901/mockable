@@ -1,29 +1,33 @@
-import * as fs from "fs";
-import * as ts from "typescript";
+import * as fs from 'fs';
+import * as ts from 'typescript';
 import {
   ClassDeclaration,
   InterfaceDeclaration,
   isClassDeclaration,
   isInterfaceDeclaration,
-  isMethodDeclaration
-} from "typescript";
+  isMethodDeclaration,
+} from 'typescript';
 
-import {getMockableDeclarations} from "../index";
+import { getMockableDeclarations } from '../index';
 import {
   createPath,
   defaultInputDir,
   defaultOutputDir,
-  defaultServiceMocksFilePath, defaultServicesFileName, defaultServicesFilePath,
+  defaultServiceMocksFilePath,
+  defaultServicesFileName,
+  defaultServicesFilePath,
   deleteFileIfExists,
-  generateServicesFile
-} from "../utils";
+  generateServicesFile,
+} from '../utils';
 
 /**
  * Returns the names of the methods of the given class declaration as an array of strings.
  * @param target - The ClassDeclaration to get the methods of.
  */
 const getMethods = (target: ClassDeclaration) => {
-  return target.members.filter(isMethodDeclaration).map((method) => method.getText());
+  return target.members
+    .filter(isMethodDeclaration)
+    .map(method => method.getText());
 };
 /**
  * Builds the Jest mock for the given class declaration.
@@ -35,7 +39,9 @@ const buildJestServiceWrapper = (classDeclaration: ClassDeclaration) => {
     return {
       __esModule: true,
       default: jest.fn(() => ({
-        ${getMethods(classDeclaration).map((method) => `${method},`).join("\n")}
+        ${getMethods(classDeclaration)
+          .map(method => `${method},`)
+          .join('\n')}
       })),
     };
   });`;
@@ -49,13 +55,13 @@ const buildJestServiceWrapper = (classDeclaration: ClassDeclaration) => {
  * @param classObjects - Array of classes of type ClassDeclaration
  */
 const getObjectsNames = (
-    interfaceObjects: InterfaceDeclaration[],
-    classObjects: ClassDeclaration[],
+  interfaceObjects: InterfaceDeclaration[],
+  classObjects: ClassDeclaration[],
 ) => {
   const interfaceNames = interfaceObjects.map(object => object.name.getText());
   const classNames = classObjects.map(object => object.name.getText());
   return [...interfaceNames, ...classNames];
-}
+};
 
 /**
  * Generates the import statement for the given objects and path.
@@ -66,9 +72,9 @@ const getObjectsNames = (
  */
 const generateImports = (objects: string[]) => {
   return `import {${objects.join(
-      ',',
+    ',',
   )}} from '../${defaultInputDir}${defaultServicesFileName}'`;
-}
+};
 
 /**
  * Returns the import statement for the given objects and path. If no path is provided, the default path is used.
@@ -76,41 +82,54 @@ const generateImports = (objects: string[]) => {
  */
 const getImports = (objects: string[]) => {
   return objects.length > 0 ? generateImports(objects) : '';
-}
+};
 
 export const generateMocks = (inputString?: string) => {
-  const filePath = "./input/data.ts";
-  const sourceCode = fs.readFileSync(filePath, "utf-8");
+  const filePath = './input/data.ts';
+  const sourceCode = fs.readFileSync(filePath, 'utf-8');
 
   const sourceFile = ts.createSourceFile(
-      filePath,
-      sourceCode,
-      ts.ScriptTarget.Latest,
-      true,
+    filePath,
+    sourceCode,
+    ts.ScriptTarget.Latest,
+    true,
   );
-  const interfaces: InterfaceDeclaration[] = sourceFile.statements.filter(isInterfaceDeclaration);
-  const classes: ClassDeclaration[] = sourceFile.statements.filter(isClassDeclaration);
+  const interfaces: InterfaceDeclaration[] = sourceFile.statements.filter(
+    isInterfaceDeclaration,
+  );
+  const classes: ClassDeclaration[] =
+    sourceFile.statements.filter(isClassDeclaration);
   createPath(`./${defaultInputDir}`);
-  deleteFileIfExists(defaultServicesFilePath,);
-  const combinedInputText = sourceFile.statements.filter((statement) => isClassDeclaration(statement) || isInterfaceDeclaration(statement)).map(declaration => declaration.getText()).join("\n");
-  generateServicesFile(`${buildImports()}\n${combinedInputText}`, true, 'input');
+  deleteFileIfExists(defaultServicesFilePath);
+  const combinedInputText = sourceFile.statements
+    .filter(
+      statement =>
+        isClassDeclaration(statement) || isInterfaceDeclaration(statement),
+    )
+    .map(declaration => declaration.getText())
+    .join('\n');
+  generateServicesFile(
+    `${buildImports()}\n${combinedInputText}`,
+    true,
+    'input',
+  );
   const generatedServices: string[] = [];
   const mockableDeclarations = getMockableDeclarations(sourceFile);
-  mockableDeclarations.filter(isClassDeclaration).forEach((declaration) => {
-    generatedServices.push(buildJestServiceWrapper(declaration))
+  mockableDeclarations.filter(isClassDeclaration).forEach(declaration => {
+    generatedServices.push(buildJestServiceWrapper(declaration));
   });
-  const res = generatedServices.join("\n");
+  const res = generatedServices.join('\n');
   createPath(`./${defaultOutputDir}`);
   deleteFileIfExists(defaultServiceMocksFilePath);
-  generateServicesFile(`${getImports(
-      getObjectsNames(interfaces, classes),
-  )}\n${res}`);
-}
+  generateServicesFile(
+    `${getImports(getObjectsNames(interfaces, classes))}\n${res}`,
+  );
+};
 /**
  * Builds the import statement for the mockable decorator.
  * @param asDependency - If true, the import statement will be from the mockable package imported using npm otherwise it will be from the local file.
  */
 const buildImports = (asDependency: boolean = false) => {
-  const path = asDependency ? 'mockable/lib/decorator' : '../lib/decorator'
-  return `import {Mockable} from "${path}"`
+  const path = asDependency ? 'mockable/lib/decorator' : '../lib/decorator';
+  return `import {Mockable} from "${path}"`;
 };

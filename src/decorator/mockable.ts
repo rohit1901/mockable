@@ -1,14 +1,14 @@
-import "reflect-metadata";
+import 'reflect-metadata';
 
 import {
-    ClassDeclaration,
-    InterfaceDeclaration,
-    isCallExpression,
-    isDecorator,
-} from "typescript";
+  ClassDeclaration,
+  InterfaceDeclaration,
+  isCallExpression,
+  isDecorator,
+} from 'typescript';
 
 // Key to store metadata
-const MOCKABLE_KEY = "MOCKABLE";
+const MOCKABLE_KEY = 'MOCKABLE';
 
 /**
  * Decorator to mark a class as mockable
@@ -16,9 +16,9 @@ const MOCKABLE_KEY = "MOCKABLE";
  * @constructor - Decorator function
  */
 export function Mockable(metadata: any) {
-    return function (target: Function) {
-        Reflect.defineMetadata('mockableMetadata', MOCKABLE_KEY, target,);
-    };
+  return function (target: Function) {
+    Reflect.defineMetadata('mockableMetadata', MOCKABLE_KEY, target);
+  };
 }
 
 /**
@@ -26,12 +26,16 @@ export function Mockable(metadata: any) {
  * @param target - The node to check. Can be a ClassDeclaration or an InterfaceDeclaration.
  */
 export const isMockable = (
-    target: ClassDeclaration | InterfaceDeclaration,
+  target: ClassDeclaration | InterfaceDeclaration,
 ): boolean => {
-    return (
-        target.modifiers &&
-        target.modifiers.some((modifier) => {
-            return isDecorator(modifier) && isCallExpression(modifier.expression) && modifier.expression.expression.getText() === 'Mockable';
-        })
-    );
+  return (
+    target.modifiers &&
+    target.modifiers.some(modifier => {
+      return (
+        isDecorator(modifier) &&
+        isCallExpression(modifier.expression) &&
+        modifier.expression.expression.getText() === 'Mockable'
+      );
+    })
+  );
 };
